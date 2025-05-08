@@ -13,6 +13,7 @@ namespace StarterAssets
 		public bool jump;
 		public bool sprint;
 		public bool shoot;
+		public bool ClearCheckpoints;
 
 		[Header("Movement Settings")]
 		public bool analogMovement;
@@ -49,10 +50,15 @@ namespace StarterAssets
 		{
 			ShootInput(value.isPressed);
 		}
+
+        public void OnClearCheckpoints(InputValue value)
+        {
+            ClearCheckpointsInput(value.isPressed);
+        }
 #endif
 
 
-		public void MoveInput(Vector2 newMoveDirection)
+        public void MoveInput(Vector2 newMoveDirection)
 		{
 			move = newMoveDirection;
 		} 
@@ -76,8 +82,12 @@ namespace StarterAssets
 		{
 			shoot = newShootState;
 		}
-		
-		private void OnApplicationFocus(bool hasFocus)
+        public void ClearCheckpointsInput(bool newClearState)
+        {
+            ClearCheckpoints = newClearState;
+        }
+
+        private void OnApplicationFocus(bool hasFocus)
 		{
 			SetCursorState(cursorLocked);
 		}

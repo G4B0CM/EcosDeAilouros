@@ -15,12 +15,10 @@ public class Weapon : MonoBehaviour
     const string SHOOT_STRING = "shoot";
 
 
-    // Update is called once per frame
+    
     private void Awake()
     {
         starterAssetsInputs = GetComponentInParent<StarterAssetsInputs>();
-        
-
     }
 
     void Update()
