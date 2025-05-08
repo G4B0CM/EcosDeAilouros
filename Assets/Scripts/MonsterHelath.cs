@@ -5,6 +5,7 @@ public class MonsterHealth : MonoBehaviour
 {
     [SerializeField] public int health = 3;
 
+
     int currentHealth;
     Animator animator;
     NavMeshAgent agent;
@@ -28,6 +29,7 @@ public class MonsterHealth : MonoBehaviour
 
         animator.ResetTrigger("GetHit");
         animator.SetTrigger("GetHit");
+        monsterScript.OnHit();
 
         if (currentHealth <= 0)
         {
@@ -39,14 +41,11 @@ public class MonsterHealth : MonoBehaviour
     {
         isDead = true;
 
-        // Desactivar comportamientos
         agent.isStopped = true;
         monsterScript.enabled = false;
 
-        // Animación de muerte
         animator.SetTrigger("Die");
 
-        // Destruir al terminar animación (opcional)
-        Destroy(gameObject, 3f); // Asegúrate que la animación dure < 3 segundos o ajusta el tiempo
+        Destroy(gameObject, 3f); 
     }
 }

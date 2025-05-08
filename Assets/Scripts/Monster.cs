@@ -11,6 +11,7 @@ public class Monster : MonoBehaviour
     [SerializeField] float walkSpeed = 0.5f;
     [SerializeField] float chaseSpeed = 2.1f;
     [SerializeField] float attackCooldown = 1f;
+    [SerializeField] float alertRadius = 10f;
 
     Animator animator;
     FirstPersonController player;
@@ -20,6 +21,7 @@ public class Monster : MonoBehaviour
     Vector3 originPosition;
     float nextWanderTime;
     float nextAttackTime;
+    public bool flag = false;
 
     private void Awake()
     {
@@ -44,7 +46,7 @@ public class Monster : MonoBehaviour
 
         if (!isAttacking)
         {
-            if (distanceToPlayer <= detectionRange)
+            if (distanceToPlayer <= detectionRange || flag)
             {
                 animator.SetBool("jugadorDetectado", true);
                 agent.isStopped = false;
@@ -98,4 +100,26 @@ public class Monster : MonoBehaviour
             }
         }
     }
+    public void OnHit()
+    {
+        flag = true;
+
+        Collider[] hits = Physics.OverlapSphere(transform.position, alertRadius);
+        foreach (var hit in hits)
+        {
+            if (hit.CompareTag("Monster") && hit.gameObject != this.gameObject)
+            {
+                Monster otherMonster = hit.GetComponent<Monster>();
+                if (otherMonster != null)
+                {
+                    otherMonster.Alert();
+                }
+            }
+        }
+    }
+    public void Alert()
+    {
+        flag = true;
+    }
+
 }
