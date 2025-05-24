@@ -14,6 +14,7 @@ namespace StarterAssets
 		public bool sprint;
 		public bool shoot;
 		public bool ClearCheckpoints;
+		public bool interact;
 
 		[Header("Movement Settings")]
 		public bool analogMovement;
@@ -55,6 +56,11 @@ namespace StarterAssets
         {
             ClearCheckpointsInput(value.isPressed);
         }
+
+        public void OnInteracts(InputValue value)
+        {
+            InteractInput(value.isPressed);
+        }
 #endif
 
 
@@ -85,6 +91,10 @@ namespace StarterAssets
         public void ClearCheckpointsInput(bool newClearState)
         {
             ClearCheckpoints = newClearState;
+        }
+        public void InteractInput(bool newClearState)
+        {
+            interact = newClearState;
         }
 
         private void OnApplicationFocus(bool hasFocus)
