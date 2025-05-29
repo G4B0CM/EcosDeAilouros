@@ -16,7 +16,7 @@ public class Weapon : MonoBehaviour
     [SerializeField] int maxAmmo = 20;
     [SerializeField] private TMP_Text balas; 
 
-    private int currentAmmo;
+    public int currentAmmo;
 
     StarterAssetsInputs starterAssetsInputs;
 

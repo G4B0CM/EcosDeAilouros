@@ -8,7 +8,7 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private TMP_Text texto;
     [SerializeField] private TMP_Text vidas;
 
-    private int currentHealth;
+    public int currentHealth;
 
     void Start()
     {

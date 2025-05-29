@@ -1,29 +1,31 @@
-ï»¿using UnityEngine;
+using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
 using StarterAssets;
 
-public class CheckpointLoadrer : MonoBehaviour
+public class CheckpointLoader : MonoBehaviour
 {
-    [SerializeField] AudioSource musicaFeliz;
-    [SerializeField] AudioSource musicaTriste;
     private bool activado = false;
     StarterAssetsInputs starterAssetsInputs;
 
-    public string getUrl = "http://127.0.0.1:5000/player/last_position";
+    [SerializeField] private string getUrl = "http://127.0.0.1:5000/player/last_position";
+    [SerializeField] private Weapon weapon; // Asigna el arma del jugador
+    [SerializeField] private PlayerHealth healthSystem; // Asigna el componente de salud del jugador
 
     private void Awake()
     {
         starterAssetsInputs = GetComponentInParent<StarterAssetsInputs>();
     }
+
     void Start()
     {
         StartCoroutine(GetLastCheckpoint());
     }
+
     private void Update()
     {
-        if (activado == false)
-        clearCheckpoints();
+        if (!activado)
+            clearCheckpoints();
     }
 
     IEnumerator GetLastCheckpoint()
@@ -35,13 +37,28 @@ public class CheckpointLoadrer : MonoBehaviour
         {
             string json = request.downloadHandler.text;
             PlayerData checkpoint = JsonUtility.FromJson<PlayerDataWrapper>(json).ToPlayerData();
-                transform.position = new Vector3(checkpoint.x, checkpoint.y, checkpoint.z);
-            Debug.Log($"Checkpoint loaded: ({checkpoint.x}, {checkpoint.y}, {checkpoint.z}) - {checkpoint.mood}");
+
+            // Mover al jugador a la posición guardada
+            transform.position = new Vector3(checkpoint.x, checkpoint.y, checkpoint.z);
+            Debug.Log($"Checkpoint loaded: ({checkpoint.x}, {checkpoint.y}, {checkpoint.z})");
+
+            // Restaurar munición
+            if (weapon != null)
+            {
+                weapon.currentAmmo = checkpoint.municion;
+                Debug.Log("Munición restaurada: " + checkpoint.municion);
+            }
+
+            // Restaurar vida
+            if (healthSystem != null)
+            {
+                healthSystem.currentHealth = checkpoint.vida;
+                Debug.Log("Vida restaurada: " + checkpoint.vida);
+            }
         }
         else
         {
-            Debug.Log("No existen checkpoints cargados ");
-            
+            Debug.LogWarning("No existen checkpoints cargados");
         }
     }
 
@@ -52,11 +69,19 @@ public class CheckpointLoadrer : MonoBehaviour
         public float x;
         public float y;
         public float z;
-        public string mood;
+        public int vida;
+        public int municion;
 
         public PlayerData ToPlayerData()
         {
-            return new PlayerData { x = x, y = y, z = z, mood = mood };
+            return new PlayerData
+            {
+                x = x,
+                y = y,
+                z = z,
+                vida = vida,
+                municion = municion
+            };
         }
     }
 
@@ -66,7 +91,8 @@ public class CheckpointLoadrer : MonoBehaviour
         public float x;
         public float y;
         public float z;
-        public string mood;
+        public int vida;
+        public int municion;
     }
 
     IEnumerator DeleteCheckpoints()
@@ -94,15 +120,5 @@ public class CheckpointLoadrer : MonoBehaviour
             Debug.Log("Checkpoints Eliminados");
             activado = true;
         }
-    }
-    public void reproducirMusicaFeliz()
-    {
-        musicaFeliz.Play();
-        musicaTriste.Stop();
-    }
-    public void reproducirMusicaTriste()
-    {
-        musicaTriste.Play();
-        musicaFeliz.Stop();
     }
 }
